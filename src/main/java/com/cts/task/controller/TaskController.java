@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,7 @@ import com.cts.task.model.Task;
 import com.cts.task.service.TaskService;
 
 
-
+@CrossOrigin
 @RestController
 public class TaskController {
 	
@@ -96,6 +97,7 @@ public class TaskController {
 		
 		return response;
     }
+	@CrossOrigin
 	@GetMapping("/task")
 	public ResponseEntity<List<Task>> getAllTasks(){
 		return new ResponseEntity<List<Task>>(taskService.listTasks(),HttpStatus.OK);
