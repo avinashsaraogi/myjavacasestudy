@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  
 
 @SpringBootApplication
-public class SpringBootRestAPI {
+public class MyJavaCaseStudy {
 	public static void main(String[] args) {
-        SpringApplication.run(SpringBootRestAPI.class, args);
+        SpringApplication.run(MyJavaCaseStudy.class, args);
     }
 }
