@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -18,15 +19,8 @@ public class RestExceptionHandler {
         this.messageSource = messageSource;
     }
     
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleExceptions(Exception ex, Locale locale) {
-        String errorMessage = messageSource.getMessage(UNEXPECTED_ERROR, null, locale);
-        ex.printStackTrace();
-        System.out.println("Throwable error for test case "+ ex.getMessage());
-		ApiError apiError = 
-			      new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, ex.getMessage());
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+   
+    
     @ExceptionHandler(RestException.class)
     public ResponseEntity<ApiError> handleRestExceptions(RestException ex, Locale locale) {
         String errorMessage = messageSource.getMessage(ex.getApiError().getMessage(), null, locale);
@@ -37,5 +31,14 @@ public class RestExceptionHandler {
 		System.out.println("Throwable error for test case "+ ex.getMessage());    
 		
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleExceptions(Exception ex, Locale locale) {
+        String errorMessage = messageSource.getMessage(UNEXPECTED_ERROR, null, locale);
+        ex.printStackTrace();
+        System.out.println("Throwable error for test case "+ ex.getMessage());
+		ApiError apiError = 
+			      new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
