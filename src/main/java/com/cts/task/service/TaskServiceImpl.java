@@ -1,5 +1,6 @@
 package com.cts.task.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,16 +23,20 @@ public class TaskServiceImpl implements  TaskService{
 
 	@Transactional		
 	public Task addTask(Task task) throws RestException
-	{
-		validation(task);		
+	{			
+		if (task.getParentTask().getTaskId() == 0){
+			task.setParentTask(null);
+		}
 		return taskRepo.saveAndFlush(task);		
 	}
 	
 	@Transactional
 	public Task updateTask(Task task) throws RestException
-	{		
-		validation(task);				 
-	 return taskRepo.saveAndFlush(task);
+	{
+		if (task.getParentTask().getTaskId() == 0){
+			task.setParentTask(null);
+		}
+		return taskRepo.saveAndFlush(task);
 	}
 	
 	@Transactional			
@@ -40,7 +45,21 @@ public class TaskServiceImpl implements  TaskService{
 	
 		
 	public List<Task> listTasks() 
-	{		return taskRepo.findAll();	}	
+	{
+		List<Task> taskList = taskRepo.findAll();
+		
+		for (int i = 0; i < taskList.size(); i++) {
+			if (taskList.get(i).getParentTask() == null){
+				Task parentTask = new Task();
+				parentTask.setTaskId(new Long(0));
+				parentTask.setTaskName("--No Parent--");
+				taskList.get(i).setParentTask(parentTask);
+			}
+		}
+		
+		return taskList;	
+		
+	}	
 	
 	
 	public Task getTaskById(Long taskId) 
@@ -50,24 +69,5 @@ public class TaskServiceImpl implements  TaskService{
 	    return task;	
 	}
 
-    private void validation(Task task) throws RestException
-    {
-    	if (task.getTaskName() == null) {
-			String error = " Task name is missing";
-			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "NotNull.task.TaskName", error);
-			throw new RestException(apiError);
-		}else if (task.getPriority() == null) {
-			String error = " Priority is missing";
-			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "NotNull.task.Priority", error);
-			throw new RestException(apiError);
-		}else if (task.getStartDate() == null) {
-			String error = " Start date is missing";
-			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "NotNull.task.StartDate", error);
-			throw new RestException(apiError);
-		} else if (task.getEndDate() == null) {
-			String error = " End date is missing";
-			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "NotNull.task.EndDate", error);
-			throw new RestException(apiError);
-		}
-    }
+    
 }
