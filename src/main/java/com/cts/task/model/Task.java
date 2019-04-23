@@ -1,8 +1,6 @@
 package com.cts.task.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 //import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,29 +27,30 @@ public class Task {
 	//@RestResource
 	private Long taskId;		
 	
+	@NotNull(message = "Task name cannot be empty")
 	@Column(unique=true,nullable=false,length = 100)
 	private String taskName;
 	
+	@NotNull(message = "Priority is missing")
 	private Long priority;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")	
-	@DateTimeFormat(pattern="yyyy-MM-dd")	
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@NotNull(message = "Start date is missing")
 	private LocalDate startDate;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")	
-	@DateTimeFormat(pattern="yyyy-MM-dd")	
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@NotNull
 	private LocalDate endDate;
 	
 	private int status;
 	
-	@ManyToOne(fetch=FetchType.EAGER, optional = true)
-	@JoinColumn(name="parent_id", nullable = true)
-	//@RestResource(path = "parentTask", rel="parentTask")
+	@ManyToOne(fetch=FetchType.EAGER, optional = true )
+	@JoinColumn(name="parent_id", nullable = true)	
 	private Task parentTask;
 	
 	
-	//@OneToMany(mappedBy="parentTask")
-	//private Set<Task> subTask = new HashSet<Task>();
 	
 	public Long getTaskId() {
 		return taskId;
