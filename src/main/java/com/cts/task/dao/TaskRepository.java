@@ -6,6 +6,4 @@ import com.cts.task.model.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long>{
 	
-	Task findByTaskName(String taskName);
-
 }
